@@ -22,8 +22,17 @@ public class GameViewer extends JFrame {
         this.setVisible(true);
     }
 
-    public void paint(Graphics g) {
+    public void drawGrid(Graphics g) {
+        Square grid[][] = backend.getGrid();
+        for (int i = 0; i < backend.GRID_HEIGHT; i++) {
+            for (int j = 0; j < backend.GRID_WIDTH; j++) {
+                grid[i][j].draw(g);
+            }
+        }
+    }
 
+    public void paint(Graphics g) {
+        drawGrid(g);
     }
 
     public void updateGame() {
