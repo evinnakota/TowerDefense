@@ -37,7 +37,7 @@ public class Square {
             g.setColor(Color.RED);
             g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
         }
-        if (towerImage != null) {
+        if (image == Game.TOWER) {
             g.drawImage(towerImage, x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT, null);
         }
     }

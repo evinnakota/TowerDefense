@@ -12,6 +12,7 @@ public class Game {
     public static final int PATH = 2;
     public static final int START_POS = 3;
     public static final int END_POS = 4;
+    public static final int TOWER = 5;
 
 
     public Game() {
@@ -28,13 +29,13 @@ public class Game {
                     char c = line.charAt(col);
 
                     if (c == '#') {
-                        Grid[row][col].setImage(WALL);
+                        Grid[row][col].addImage(WALL);
                     } else if (c == ' ') {
-                        Grid[row][col].setImage(PATH);
+                        Grid[row][col].addImage(PATH);
                     } else if (c == 'S') {
-                        Grid[row][col].setImage(START_POS);
+                        Grid[row][col].addImage(START_POS);
                     } else if (c == 'E') {
-                        Grid[row][col].setImage(END_POS);
+                        Grid[row][col].addImage(END_POS);
                     }
                 }
             }
