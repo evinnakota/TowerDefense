@@ -60,8 +60,9 @@ public class GameViewer extends JFrame {
 
         if (row >= 0 && row < backend.GRID_HEIGHT &&
                 col >= 0 && col < backend.GRID_WIDTH) {
-
-            grid[row][col].addImage(Game.TOWER);
+            if (grid[row][col].getImage() == 1) {
+                grid[row][col].addImage(Game.TOWER);
+            }
         }
     }
 
