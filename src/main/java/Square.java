@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.io.File;
+import java.util.Scanner;
 
 public class Square {
     private int x_cord;
@@ -19,16 +21,19 @@ public class Square {
     }
 
     public void draw(Graphics g) {
-        if (image == Game.START_POS) {
+        if (image == Game.WALL) {
+            g.setColor(Color.BLACK);
+            g.drawRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
+        } else if (image == Game.PATH) {
+            g.setColor(Color.BLACK);
+            g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
+        } else if (image == Game.START_POS) {
             g.setColor(Color.GREEN);
             g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
-        }
-        if (image == Game.END_POS) {
+        } else if (image == Game.END_POS) {
             g.setColor(Color.RED);
             g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
         }
-        g.setColor(Color.black);
-        g.drawRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
     }
 
     public void setImage(int image) {
