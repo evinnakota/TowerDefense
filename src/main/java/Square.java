@@ -1,3 +1,5 @@
+import javax.swing.*;
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.Scanner;
@@ -10,6 +12,7 @@ public class Square {
     public static int SQUARE_HEIGHT = 25;
     public static int bar = 30;
     private static int count = 0;
+    private Image towerImage = new ImageIcon(getClass().getResource("/tower-defense.png")).getImage();;
 
     public Square() {
         int col = count % Game.GRID_WIDTH;
@@ -34,9 +37,12 @@ public class Square {
             g.setColor(Color.RED);
             g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
         }
+        if (image == Game.TOWER) {
+            g.drawImage(towerImage, x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT, null);
+        }
     }
 
-    public void setImage(int image) {
+    public void addImage(int image) {
         this.image = image;
     }
 

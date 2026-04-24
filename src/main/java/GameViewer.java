@@ -16,6 +16,15 @@ public class GameViewer extends JFrame {
 
     public GameViewer(Game backend) {
         this.backend = backend;
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+
+                addTower(x, y);
+                repaint();
+            }
+        });
         this.setTitle("State Tracker!");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -44,7 +53,16 @@ public class GameViewer extends JFrame {
     }
 
     public void addTower(int x, int y) {
+        Square[][] grid = backend.getGrid();
 
+        int col = x / Square.SQUARE_WIDTH;
+        int row = (y - Square.bar) / Square.SQUARE_HEIGHT;
+
+        if (row >= 0 && row < backend.GRID_HEIGHT &&
+                col >= 0 && col < backend.GRID_WIDTH) {
+
+            grid[row][col].addImage(Game.TOWER);
+        }
     }
 
 
