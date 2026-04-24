@@ -12,6 +12,7 @@ public class Square {
     public static int SQUARE_HEIGHT = 25;
     public static int bar = 30;
     private static int count = 0;
+    private boolean hasTower;
     private Image towerImage = new ImageIcon(getClass().getResource("/tower-defense.png")).getImage();;
 
     public Square() {
@@ -20,7 +21,8 @@ public class Square {
         x_cord = col * SQUARE_WIDTH;
         y_cord = row * SQUARE_HEIGHT + bar;
         count++;
-
+        image = 0;
+        hasTower = false;
     }
 
     public void draw(Graphics g) {
@@ -37,7 +39,8 @@ public class Square {
             g.setColor(Color.RED);
             g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
         }
-        if (image == Game.TOWER) {
+        if (image == Game.TOWER && hasTower == false) {
+            hasTower = true;
             g.drawImage(towerImage, x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT, null);
         }
     }
@@ -45,6 +48,8 @@ public class Square {
     public void addImage(int image) {
         this.image = image;
     }
+
+    public int getImage() { return image; }
 
     public int getY_cord() {
         return y_cord;
