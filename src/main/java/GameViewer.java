@@ -11,8 +11,8 @@ public class GameViewer extends JFrame {
     private int health;
     private int money;
     private int wave;
-    private static int WINDOW_WIDTH = 500;
-    private static int WINDOW_HEIGHT = 500;
+    private static int WINDOW_WIDTH = 1920;
+    private static int WINDOW_HEIGHT = 1080;
 
     public GameViewer(Game backend) {
         this.backend = backend;
