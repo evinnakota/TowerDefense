@@ -12,13 +12,14 @@ public class Game {
     public static final int PATH = 2;
     public static final int START_POS = 3;
     public static final int END_POS = 4;
-    public static final int TOWER = 5;
+    public static final int BASIC_TOWER = 5;
+    public static final int SNIPER = 6;
 
 
     public Game() {
         try {
             Grid = new Square[GRID_HEIGHT][GRID_WIDTH];
-            File myObj = new File("Resources/maze1.txt");
+            File myObj = new File("src/main/resources/maze1.txt");
             Scanner myReader = new Scanner(myObj);
 
             for (int row = 0; row < GRID_HEIGHT && myReader.hasNextLine(); row++) {
