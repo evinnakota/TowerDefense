@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class GameViewer extends JFrame {
@@ -22,7 +23,25 @@ public class GameViewer extends JFrame {
 
     public GameViewer(Game backend) {
         this.backend = backend;
-        this.setTitle("Tower Defense!");
+        enemies = new ArrayList<>();
+        towers = new ArrayList<>();
+        projectiles = new ArrayList<>();
+
+        Square[][] grid = backend.getGrid();
+
+        // Find starting square and spawn enemy
+        for (int r = 0; r < backend.GRID_HEIGHT; r++) {
+            for (int c = 0; c < backend.GRID_WIDTH; c++) {
+                if (grid[r][c].getImage() == Game.START_POS) {
+                    enemies.add(new Enemy(
+                            grid[r][c].getX_cord(),
+                            grid[r][c].getY_cord()
+                    ));
+                }
+            }
+        }
+
+        this.setTitle("State Tracker!");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -71,6 +90,15 @@ public class GameViewer extends JFrame {
 
         this.add(sidePanel, BorderLayout.EAST);
         this.setVisible(true);
+//        new Timer(300, e -> {
+//            for (Enemy enemy : enemies) {
+//                enemy.move(backend.getGrid());
+//            }
+//            for (Tower tower : towers) {
+//                tower.attack(enemies);
+//            }
+//            repaint();
+//        }).start();
     }
 
     public void updateStats(int health, int money) {
@@ -93,11 +121,23 @@ public class GameViewer extends JFrame {
             }
         }
 
+
         for (int i = 0; i < backend.GRID_HEIGHT; i++) {
             for (int j = 0; j < backend.GRID_WIDTH; j++) {
                 grid[i][j].drawRange(g, mouseX, mouseY);
             }
         }
+//        for (Enemy enemy : enemies) {
+//            enemy.draw(g);
+//        }
+//        for (Tower tower : towers) {
+//            tower.drawRange(g);
+//        }
+//        g.setColor(Color.WHITE);
+//        g.fillRect(10, 40, 150, 30);
+//
+//        g.setColor(Color.BLACK);
+//        g.drawString("Health: " + health, 20, 60);
     }
 
     public void updateGame() {
