@@ -5,9 +5,6 @@ import java.util.ArrayList;
 
 public class GameViewer extends JFrame {
     private Game backend;
-    private ArrayList<Enemy> enemies;
-    private ArrayList<Tower> towers;
-    private ArrayList<Projectile> projectiles;
     private int wave;
     private static int WINDOW_WIDTH = 1920;
     private static int WINDOW_HEIGHT = 1080;
@@ -18,29 +15,12 @@ public class GameViewer extends JFrame {
     private JLabel moneyLabel;
     private int mouseX = -1;
     private int mouseY = -1;
+    private GamePanel gamePanel;
     public static final int BASIC_TOWER_COST = 75;
     public static final int SNPIER_TOWER_COST = 150;
 
     public GameViewer(Game backend) {
         this.backend = backend;
-        enemies = new ArrayList<>();
-        towers = new ArrayList<>();
-        projectiles = new ArrayList<>();
-
-        Square[][] grid = backend.getGrid();
-
-        // Find starting square and spawn enemy
-        for (int r = 0; r < backend.GRID_HEIGHT; r++) {
-            for (int c = 0; c < backend.GRID_WIDTH; c++) {
-                if (grid[r][c].getImage() == Game.START_POS) {
-                    enemies.add(new Enemy(
-                            grid[r][c].getX_cord(),
-                            grid[r][c].getY_cord()
-                    ));
-                }
-            }
-        }
-
         this.setTitle("State Tracker!");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -48,7 +28,7 @@ public class GameViewer extends JFrame {
         this.setLayout(new BorderLayout());
 
         // Drawing panel
-        GamePanel gamePanel = new GamePanel(this);
+        gamePanel = new GamePanel(this);
         this.add(gamePanel, BorderLayout.CENTER);
 
         JPanel sidePanel = new JPanel();
@@ -101,6 +81,10 @@ public class GameViewer extends JFrame {
 //        }).start();
     }
 
+    public GamePanel getGamePanel() {
+        return gamePanel;
+    }
+
     public void updateStats(int health, int money) {
         this.health = health;
         this.money = money;
@@ -113,6 +97,10 @@ public class GameViewer extends JFrame {
         mouseY = y;
     }
 
+    public Game getBackend() {
+        return backend;
+    }
+
     public void drawGrid(Graphics g) {
         Square grid[][] = backend.getGrid();
         for (int i = 0; i < backend.GRID_HEIGHT; i++) {
@@ -120,6 +108,8 @@ public class GameViewer extends JFrame {
                 grid[i][j].draw(g);
             }
         }
+
+
 
 
         for (int i = 0; i < backend.GRID_HEIGHT; i++) {

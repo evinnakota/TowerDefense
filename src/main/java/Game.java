@@ -1,11 +1,19 @@
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Game {
+public class Game implements ActionListener {
+    private static final int SLEEP_TIME = 90;
     private GameViewer frontend;
     private boolean running;
     private Square[][] Grid;
+    private ArrayList<Enemy> enemies;
+    private ArrayList<Tower> towers;
+    private ArrayList<Projectile> projectiles;
     public static int GRID_HEIGHT = 33;
     public static int GRID_WIDTH = 59;
     public static final int WALL = 1;
@@ -46,7 +54,26 @@ public class Game {
             e.printStackTrace();
         }
         frontend = new GameViewer(this);
+        enemies = new ArrayList<>();
+
+        // Find starting square and spawn enemy
+        for (int r = 0; r < GRID_HEIGHT; r++) {
+            for (int c = 0; c < GRID_WIDTH; c++) {
+                if (Grid[r][c].getImage() == Game.START_POS) {
+                    enemies.add(new Enemy(
+                            Grid[r][c].getX_cord(),
+                            Grid[r][c].getY_cord()
+                    ));
+                }
+            }
+        }
+        Timer clock = new Timer(SLEEP_TIME, this);
+        clock.start();
         startGame();
+    }
+
+    public ArrayList<Enemy> getEnemies() {
+        return enemies;
     }
 
     public void startGame() {
@@ -61,9 +88,19 @@ public class Game {
 
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        for (Enemy enemy : enemies) {
+            enemy.move(Grid);
+        }
+        frontend.getGamePanel().repaint();
+    }
+
 
 
     public static void main(String[] args) {
         Game g = new Game();
     }
+
+
 }
