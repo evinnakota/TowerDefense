@@ -1,13 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GamePanel extends JPanel {
 
     private GameViewer viewer;
+    private ArrayList<Enemy> enemies;
 
     public GamePanel(GameViewer viewer) {
         this.viewer = viewer;
-
         this.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent e) {
                 int x = e.getX();
@@ -31,5 +32,6 @@ public class GamePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         viewer.drawGrid(g);
+        viewer.getBackend().getEnemies().get(0).draw(g);
     }
 }

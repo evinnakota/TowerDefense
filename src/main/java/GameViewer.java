@@ -1,12 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class GameViewer extends JFrame {
     private Game backend;
-    private ArrayList<Enemy> enemies;
-    private ArrayList<Tower> towers;
-    private ArrayList<Projectile> projectiles;
     private int wave;
     private static int WINDOW_WIDTH = 1920;
     private static int WINDOW_HEIGHT = 1080;
@@ -17,19 +15,20 @@ public class GameViewer extends JFrame {
     private JLabel moneyLabel;
     private int mouseX = -1;
     private int mouseY = -1;
+    private GamePanel gamePanel;
     public static final int BASIC_TOWER_COST = 75;
     public static final int SNPIER_TOWER_COST = 150;
 
     public GameViewer(Game backend) {
         this.backend = backend;
-        this.setTitle("Tower Defense!");
+        this.setTitle("State Tracker!");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
         this.setLayout(new BorderLayout());
 
         // Drawing panel
-        GamePanel gamePanel = new GamePanel(this);
+        gamePanel = new GamePanel(this);
         this.add(gamePanel, BorderLayout.CENTER);
 
         JPanel sidePanel = new JPanel();
@@ -71,6 +70,19 @@ public class GameViewer extends JFrame {
 
         this.add(sidePanel, BorderLayout.EAST);
         this.setVisible(true);
+//        new Timer(300, e -> {
+//            for (Enemy enemy : enemies) {
+//                enemy.move(backend.getGrid());
+//            }
+//            for (Tower tower : towers) {
+//                tower.attack(enemies);
+//            }
+//            repaint();
+//        }).start();
+    }
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
     }
 
     public void updateStats(int health, int money) {
@@ -85,6 +97,10 @@ public class GameViewer extends JFrame {
         mouseY = y;
     }
 
+    public Game getBackend() {
+        return backend;
+    }
+
     public void drawGrid(Graphics g) {
         Square grid[][] = backend.getGrid();
         for (int i = 0; i < backend.GRID_HEIGHT; i++) {
@@ -93,11 +109,25 @@ public class GameViewer extends JFrame {
             }
         }
 
+
+
+
         for (int i = 0; i < backend.GRID_HEIGHT; i++) {
             for (int j = 0; j < backend.GRID_WIDTH; j++) {
                 grid[i][j].drawRange(g, mouseX, mouseY);
             }
         }
+//        for (Enemy enemy : enemies) {
+//            enemy.draw(g);
+//        }
+//        for (Tower tower : towers) {
+//            tower.drawRange(g);
+//        }
+//        g.setColor(Color.WHITE);
+//        g.fillRect(10, 40, 150, 30);
+//
+//        g.setColor(Color.BLACK);
+//        g.drawString("Health: " + health, 20, 60);
     }
 
     public void updateGame() {
