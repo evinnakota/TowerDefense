@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Game implements ActionListener {
-    private static final int SLEEP_TIME = 90;
+    private static final int SLEEP_TIME = 200;
     private GameViewer frontend;
     private boolean running;
     private Square[][] Grid;

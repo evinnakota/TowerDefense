@@ -51,18 +51,14 @@ public class Square {
                 mouseY < y_cord || mouseY > y_cord + SQUARE_HEIGHT) return;
 
         int range = (image == Game.SNIPER) ? SNIPER_TOWER_RANGE : BASIC_TOWER_RANGE;
-
         int cx = x_cord + SQUARE_WIDTH / 2;
         int cy = y_cord + SQUARE_HEIGHT / 2;
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Filled semi-transparent circle
         g2d.setColor(new Color(255, 255, 0, 50));
         g2d.fillOval(cx - range, cy - range, range * 2, range * 2);
-
-        // Solid border
         g2d.setColor(new Color(255, 255, 0, 180));
         g2d.setStroke(new BasicStroke(1.5f));
         g2d.drawOval(cx - range, cy - range, range * 2, range * 2);

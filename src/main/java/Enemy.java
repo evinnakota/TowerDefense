@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 
 public class Enemy {
@@ -10,6 +11,7 @@ public class Enemy {
     private int lastY;
     private int lastRow;
     private int lastCol;
+    private Image monster1 = new ImageIcon(getClass().getResource("/monster1.png")).getImage();
 
     public Enemy(int startX, int startY) {
         this.x = startX;
@@ -81,8 +83,7 @@ public class Enemy {
 
     public void draw(Graphics g) {
         // Enemy body
-        g.setColor(Color.YELLOW);
-        g.fillOval(x, y, Square.SQUARE_WIDTH, Square.SQUARE_HEIGHT);
+        g.drawImage(monster1, getX(), getY(), Square.SQUARE_WIDTH, Square.SQUARE_HEIGHT, null);
 
         // Health bar background
         g.setColor(Color.RED);
