@@ -10,6 +10,9 @@ public class Square {
     public static int bar = 0;
     private static int count = 0;
     private boolean hasTower;
+    private boolean isWall;
+    private boolean isStart;
+    private boolean isEnd;
     private Image basicTower = new ImageIcon(getClass().getResource("/tower-defense.png")).getImage();
     private Image sniperTower = new ImageIcon(getClass().getResource("/Sniper_Tower.png")).getImage();
     public static final int BASIC_TOWER_RANGE = 150;
@@ -24,7 +27,17 @@ public class Square {
         image = 0;
         hasTower = false;
     }
+    public boolean isWall() {
+        return isWall;
+    }
 
+    public boolean isStart() {
+        return isStart;
+    }
+
+    public boolean isEnd() {
+        return isEnd;
+    }
     public void draw(Graphics g) {
         if (image == Game.PATH) {
             g.setColor(Color.BLACK);
@@ -66,6 +79,20 @@ public class Square {
 
     public void addImage(int image) {
         this.image = image;
+
+        isWall = false;
+        isStart = false;
+        isEnd = false;
+
+        if (image == Game.WALL) {
+            isWall = true;
+        }
+        else if (image == Game.START_POS) {
+            isStart = true;
+        }
+        else if (image == Game.END_POS) {
+            isEnd = true;
+        }
     }
 
     public int getImage() { return image; }
