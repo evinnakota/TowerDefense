@@ -18,6 +18,7 @@ public class GameViewer extends JFrame {
     private GamePanel gamePanel;
     public static final int BASIC_TOWER_COST = 75;
     public static final int SNPIER_TOWER_COST = 150;
+    private JLabel waveLabel;
 
     public GameViewer(Game backend) {
         this.backend = backend;
@@ -47,6 +48,12 @@ public class GameViewer extends JFrame {
         moneyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         moneyLabel.setMaximumSize(new Dimension(150, 30));
 
+        waveLabel = new JLabel("Wave: 1", SwingConstants.CENTER);
+        waveLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        waveLabel.setForeground(Color.BLUE);
+        waveLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        waveLabel.setMaximumSize(new Dimension(150, 30));
+
         JPanel basicTowerPanel = new JPanel(new BorderLayout());
         basicTowerPanel.setMaximumSize(new Dimension(150, 200));
         JButton basicTowerBtn = new JButton("Basic Tower $" + BASIC_TOWER_COST);
@@ -65,6 +72,7 @@ public class GameViewer extends JFrame {
 
         sidePanel.add(healthLabel);
         sidePanel.add(moneyLabel);
+        sidePanel.add(waveLabel);
         sidePanel.add(basicTowerPanel);
         sidePanel.add(sniperTowerPanel);
 
@@ -85,11 +93,14 @@ public class GameViewer extends JFrame {
         return gamePanel;
     }
 
-    public void updateStats(int health, int money) {
+    public void updateStats(int health, int money, int wave) {
         this.health = health;
         this.money = money;
+        this.wave = wave;
+
         healthLabel.setText("❤ " + health);
         moneyLabel.setText("$ " + money);
+        waveLabel.setText("Wave: " + wave);
     }
 
     public void setMousePos(int x, int y) {
@@ -138,6 +149,13 @@ public class GameViewer extends JFrame {
 
     }
 
+    public int getHealth() {
+        return health;
+    }
+
+    public int getMoney() {
+        return money;
+    }
     public void addTower(int x, int y) {
         Square[][] grid = backend.getGrid();
 
@@ -150,7 +168,11 @@ public class GameViewer extends JFrame {
                 int cost = (selectedTowerType == Game.SNIPER) ? SNPIER_TOWER_COST : BASIC_TOWER_COST;
                 if (money >= cost) {
                     grid[row][col].addImage(selectedTowerType);
-                    updateStats(health, money-cost);
+                    backend.addTower(new Tower(
+                            grid[row][col].getX_cord(),
+                            grid[row][col].getY_cord()
+                    ));
+                    updateStats(health, money - cost, wave);
                 } else {
                     JOptionPane.showMessageDialog(this, "Not enough Money!");
                 }

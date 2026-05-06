@@ -7,12 +7,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Game implements ActionListener {
-    private static final int SLEEP_TIME = 200;
+    private static final int SLEEP_TIME = 40;
     private GameViewer frontend;
     private boolean running;
     private Square[][] Grid;
     private ArrayList<Enemy> enemies;
     private ArrayList<Tower> towers;
+    private ArrayList<Square> path;
     private ArrayList<Projectile> projectiles;
     public static int GRID_HEIGHT = 33;
     public static int GRID_WIDTH = 59;
@@ -22,6 +23,17 @@ public class Game implements ActionListener {
     public static final int END_POS = 4;
     public static final int BASIC_TOWER = 5;
     public static final int SNIPER = 6;
+    private int spawnCounter = 0;
+    private int enemiesSpawned = 0;
+    private int maxEnemies = 10;
+    private int currentWave = 1;
+    private int enemiesPerWave = 5;
+    private boolean waveActive = true;
+    private int enemySpeed = 4;
+
+    public int getEnemySpeed() {
+        return enemySpeed;
+    }
 
 
     public Game() {
@@ -39,11 +51,17 @@ public class Game implements ActionListener {
 
                     if (c == '#') {
                         Grid[row][col].addImage(WALL);
-                    } else if (c == ' ') {
+                    }
+
+                    else if (c == ' ') {
                         Grid[row][col].addImage(PATH);
-                    } else if (c == 'S') {
+                    }
+
+                    else if (c == 'S') {
                         Grid[row][col].addImage(START_POS);
-                    } else if (c == 'E') {
+                    }
+
+                    else if (c == 'E') {
                         Grid[row][col].addImage(END_POS);
                     }
                 }
@@ -54,15 +72,23 @@ public class Game implements ActionListener {
             e.printStackTrace();
         }
         frontend = new GameViewer(this);
+        towers = new ArrayList<>();
         enemies = new ArrayList<>();
 
         // Find starting square and spawn enemy
         for (int r = 0; r < GRID_HEIGHT; r++) {
             for (int c = 0; c < GRID_WIDTH; c++) {
-                if (Grid[r][c].getImage() == Game.START_POS) {
+                if (Grid[r][c].isStart()) {
+
+                    // Scale enemy stats based on wave
+                    int enemyHealth = 50 + (currentWave * 25);
+                    // Lower speed value = smoother/faster
+
                     enemies.add(new Enemy(
                             Grid[r][c].getX_cord(),
-                            Grid[r][c].getY_cord()
+                            Grid[r][c].getY_cord(),
+                            enemyHealth,
+                            enemySpeed
                     ));
                 }
             }
@@ -70,6 +96,25 @@ public class Game implements ActionListener {
         Timer clock = new Timer(SLEEP_TIME, this);
         clock.start();
         startGame();
+    }
+
+    public void spawnEnemy() {
+        int enemyHealth = 50 + (currentWave * 25);
+//        int enemySpeed = Math.max(2, 4 - currentWave / 3);
+
+        for (int r = 0; r < GRID_HEIGHT; r++) {
+            for (int c = 0; c < GRID_WIDTH; c++) {
+                if (Grid[r][c].isStart()) {
+                    enemies.add(new Enemy(
+                            Grid[r][c].getX_cord(),
+                            Grid[r][c].getY_cord(),
+                            enemyHealth,
+                            enemySpeed
+                    ));
+                    return;
+                }
+            }
+        }
     }
 
     public ArrayList<Enemy> getEnemies() {
@@ -87,12 +132,73 @@ public class Game implements ActionListener {
     public void gameLoop() {
 
     }
+    public void addTower(Tower tower) {
+        towers.add(tower);
+    }
 
-    @Override
     public void actionPerformed(ActionEvent e) {
-        for (Enemy enemy : enemies) {
-            enemy.move(Grid);
+
+        spawnCounter++;
+
+        // Spawn enemies for current wave
+        if (enemiesSpawned < enemiesPerWave) {
+
+            if (spawnCounter >= 25) {
+                spawnEnemy();
+                enemiesSpawned++;
+                spawnCounter = 0;
+            }
+
         }
+
+        // If wave finished and all enemies defeated, start next wave
+        else if (enemies.isEmpty()) {
+            currentWave++;
+
+            // Increase difficulty
+            enemiesPerWave += 3;
+
+            // Reset for next wave
+            enemiesSpawned = 0;
+            spawnCounter = 0;
+
+            System.out.println("Wave " + currentWave + " started!");
+        }
+
+        // Towers attack enemies
+        for (Tower tower : towers) {
+            tower.attack(enemies);
+        }
+
+        // Enemy updates
+        for (int i = enemies.size() - 1; i >= 0; i--) {
+            Enemy enemy = enemies.get(i);
+
+            enemy.move(Grid);
+
+            // Enemy defeated
+            if (!enemy.isAlive()) {
+                frontend.updateStats(
+                        frontend.getHealth(),
+                        frontend.getMoney() + (25 + currentWave * 5),
+                        currentWave
+                );
+
+                enemies.remove(i);
+            }
+
+            // Enemy reaches end
+            else if (enemy.reachedEnd(Grid)) {
+                frontend.updateStats(
+                        frontend.getHealth() - (5 + currentWave),
+                        frontend.getMoney(),
+                        currentWave
+                );
+
+                enemies.remove(i);
+            }
+        }
+
         frontend.getGamePanel().repaint();
     }
 

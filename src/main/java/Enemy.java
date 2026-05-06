@@ -13,18 +13,27 @@ public class Enemy {
     private int lastCol;
     private Image monster1 = new ImageIcon(getClass().getResource("/monster1.png")).getImage();
 
-    public Enemy(int startX, int startY) {
+    public Enemy(int startX, int startY, int health, int speed) {
         this.x = startX;
         this.y = startY;
-        this.lastX = startX;
-        this.lastY = startY;
-        this.health = 100;
-        this.speed = Square.SQUARE_WIDTH;
+        this.health = health;
+        this.speed = speed;
         this.lastRow = -1;
         this.lastCol = -1;
     }
 
+    public boolean reachedEnd(Square[][] grid) {
+        int row = y / Square.SQUARE_HEIGHT;
+        int col = x / Square.SQUARE_WIDTH;
 
+        if (row >= 0 && row < Game.GRID_HEIGHT &&
+                col >= 0 && col < Game.GRID_WIDTH) {
+
+            return grid[row][col].getImage() == Game.END_POS;
+        }
+
+        return false;
+    }
 
     public void move(Square[][] grid) {
         int row = (y - Square.bar) / Square.SQUARE_HEIGHT;
@@ -34,6 +43,8 @@ public class Enemy {
                 col < 0 || col >= Game.GRID_WIDTH) {
             return;
         }
+
+
 
         // RIGHT
         if (col + 1 < Game.GRID_WIDTH &&
