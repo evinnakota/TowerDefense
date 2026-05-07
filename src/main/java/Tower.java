@@ -1,52 +1,39 @@
-import java.awt.*;
 import java.util.ArrayList;
 
 public class Tower {
-    private int x;
-    private int y;
-    private int range;
-    private int damage;
-    private int fireRate;
+    private int x, y, range, damage, cooldown = 0;
 
-    public Tower(int x, int y) {
+    public Tower(int x, int y, int type) {
         this.x = x;
         this.y = y;
 
-        // Default tower stats
-        this.range = 100;
-        this.damage = 10;
-        this.fireRate = 30;
-    }
-
-    public void drawRange(Graphics g) {
-        g.setColor(new Color(0, 0, 255, 80));
-
-        g.drawOval(
-                x - range + Square.SQUARE_WIDTH / 2,
-                y - range + Square.SQUARE_HEIGHT / 2,
-                range * 2,
-                range * 2
-        );
+        // Assign stats based on the tower type constant
+        if (type == Game.SNIPER) {
+            this.range = Square.SNIPER_TOWER_RANGE;
+            this.damage = 40;
+        } else {
+            this.range = Square.BASIC_TOWER_RANGE;
+            this.damage = 10;
+        }
     }
 
     public void attack(ArrayList<Enemy> enemies) {
-        for (Enemy enemy : enemies) {
-            if (inRange(enemy)) {
-                enemy.takeDamage(damage);
+        if (cooldown > 0) {
+            cooldown--;
+            return;
+        }
+
+        for (Enemy e : enemies) {
+            if (inRange(e)) {
+                e.takeDamage(damage);
+                cooldown = 15; // Fire rate delay
                 break;
             }
         }
     }
+
     public boolean inRange(Enemy e) {
-        double distance = Math.sqrt(Math.pow(x - e.getX(), 2) + Math.pow(y - e.getY(), 2));
-        return distance <= range;
+        double dist = Math.sqrt(Math.pow(x - e.getX(), 2) + Math.pow(y - e.getY(), 2));
+        return dist <= range;
     }
-
-    public void upgrade() {
-        range += 20;
-        damage += 5;
-    }
-
-
-
 }

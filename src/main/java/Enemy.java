@@ -1,127 +1,56 @@
-import javax.swing.*;
 import java.awt.*;
 
 public class Enemy {
-    private int x;
-    private int y;
-    private int health;
-    private int speed;
-    private int pathIndex;
-    private int lastX;
-    private int lastY;
-    private int lastRow;
-    private int lastCol;
-    private Image monster1 = new ImageIcon(getClass().getResource("/monster1.png")).getImage();
+    private int x, y, health, speed;
+    private int lastRow = -1, lastCol = -1;
 
-    public Enemy(int startX, int startY, int health, int speed) {
-        this.x = startX;
-        this.y = startY;
+    public Enemy(int x, int y, int health, int speed) {
+        this.x = x;
+        this.y = y;
         this.health = health;
         this.speed = speed;
-        this.lastRow = -1;
-        this.lastCol = -1;
-    }
-
-    public boolean reachedEnd(Square[][] grid) {
-        int row = y / Square.SQUARE_HEIGHT;
-        int col = x / Square.SQUARE_WIDTH;
-
-        if (row >= 0 && row < Game.GRID_HEIGHT &&
-                col >= 0 && col < Game.GRID_WIDTH) {
-
-            return grid[row][col].getImage() == Game.END_POS;
-        }
-
-        return false;
     }
 
     public void move(Square[][] grid) {
-        int row = (y - Square.bar) / Square.SQUARE_HEIGHT;
         int col = x / Square.SQUARE_WIDTH;
+        int row = (y - Square.bar) / Square.SQUARE_HEIGHT;
 
-        if (row < 0 || row >= Game.GRID_HEIGHT ||
-                col < 0 || col >= Game.GRID_WIDTH) {
-            return;
+        // Turn only at the center of a tile
+        if (x % Square.SQUARE_WIDTH == 0 && (y - Square.bar) % Square.SQUARE_HEIGHT == 0) {
+            int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}}; // Right, Down, Left, Up
+            for (int[] d : directions) {
+                int nr = row + d[0], nc = col + d[1];
+                if (nr >= 0 && nr < Game.GRID_HEIGHT && nc >= 0 && nc < Game.GRID_WIDTH) {
+                    if (grid[nr][nc].getImage() == Game.PATH || grid[nr][nc].getImage() == Game.END_POS) {
+                        if (!(nr == lastRow && nc == lastCol)) {
+                            lastRow = row; lastCol = col;
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
-
-
-        // RIGHT
-        if (col + 1 < Game.GRID_WIDTH &&
-                (grid[row][col + 1].getImage() == Game.PATH ||
-                        grid[row][col + 1].getImage() == Game.END_POS) &&
-                !(row == lastRow && col + 1 == lastCol)) {
-
-            lastRow = row;
-            lastCol = col;
-            x += speed;
-        }
-
-        // DOWN
-        else if (row + 1 < Game.GRID_HEIGHT &&
-                (grid[row + 1][col].getImage() == Game.PATH ||
-                        grid[row + 1][col].getImage() == Game.END_POS) &&
-                !(row + 1 == lastRow && col == lastCol)) {
-
-            lastRow = row;
-            lastCol = col;
-            y += speed;
-        }
-
-        // LEFT
-        else if (col - 1 >= 0 &&
-                (grid[row][col - 1].getImage() == Game.PATH ||
-                        grid[row][col - 1].getImage() == Game.END_POS) &&
-                !(row == lastRow && col - 1 == lastCol)) {
-
-            lastRow = row;
-            lastCol = col;
-            x -= speed;
-        }
-
-        // UP
-        else if (row - 1 >= 0 &&
-                (grid[row - 1][col].getImage() == Game.PATH ||
-                        grid[row - 1][col].getImage() == Game.END_POS) &&
-                !(row - 1 == lastRow && col == lastCol)) {
-
-            lastRow = row;
-            lastCol = col;
-            y -= speed;
-        }
+        // Apply movement
+        if (lastCol < col) x += speed;
+        else if (lastCol > col) x -= speed;
+        else if (lastRow < row) y += speed;
+        else if (lastRow > row) y -= speed;
     }
-
 
     public void draw(Graphics g) {
-        // Enemy body
-        g.drawImage(monster1, getX(), getY(), Square.SQUARE_WIDTH, Square.SQUARE_HEIGHT, null);
-
-        // Health bar background
-        g.setColor(Color.RED);
-        g.fillRect(x, y - 8, Square.SQUARE_WIDTH, 5);
-
-        // Current health
         g.setColor(Color.GREEN);
-        int healthWidth = (int)((health / 100.0) * Square.SQUARE_WIDTH);
-        g.fillRect(x, y - 8, healthWidth, 5);
+        g.fillRect(x, y, Square.SQUARE_WIDTH, Square.SQUARE_HEIGHT);
     }
 
-    public void takeDamage(int dmg) {
-        health -= dmg;
+    public boolean reachedEnd(Square[][] grid) {
+        int r = (y - Square.bar) / Square.SQUARE_HEIGHT;
+        int c = x / Square.SQUARE_WIDTH;
+        return grid[r][c].getImage() == Game.END_POS;
     }
 
-    public boolean isAlive() {
-        return health > 0;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-    public int getHealth() {
-        return health;
-    }
+    public void takeDamage(int dmg) { health -= dmg; }
+    public boolean isAlive() { return health > 0; }
+    public int getX() { return x; }
+    public int getY() { return y; }
 }
