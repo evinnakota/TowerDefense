@@ -146,11 +146,27 @@ public class GameViewer extends JFrame {
 
         if (row >= 0 && row < backend.GRID_HEIGHT &&
                 col >= 0 && col < backend.GRID_WIDTH) {
+
             if (grid[row][col].getImage() == Game.WALL) {
-                int cost = (selectedTowerType == Game.SNIPER) ? SNPIER_TOWER_COST : BASIC_TOWER_COST;
+
+                int cost = (selectedTowerType == Game.SNIPER)
+                        ? SNPIER_TOWER_COST
+                        : BASIC_TOWER_COST;
+
                 if (money >= cost) {
+
+                    // Change square visually
                     grid[row][col].addImage(selectedTowerType);
-                    updateStats(health, money-cost);
+
+                    // Add actual tower object to backend
+                    backend.addTower(new Tower(
+                            grid[row][col].getX_cord(),
+                            grid[row][col].getY_cord()
+                    ));
+
+                    // Deduct money
+                    updateStats(health, money - cost);
+
                 } else {
                     JOptionPane.showMessageDialog(this, "Not enough Money!");
                 }
@@ -159,5 +175,11 @@ public class GameViewer extends JFrame {
     }
 
 
+    public int getHealth() {
+        return health;
+    }
 
+    public int getMoney() {
+        return money;
+    }
 }

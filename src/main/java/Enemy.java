@@ -12,6 +12,8 @@ public class Enemy {
     private int lastRow;
     private int lastCol;
     private Image monster1 = new ImageIcon(getClass().getResource("/monster1.png")).getImage();
+    private Image monster2 = new ImageIcon(getClass().getResource("/monster2.png")).getImage();
+    private int enemyType;
 
     public Enemy(int startX, int startY) {
         this.x = startX;
@@ -80,6 +82,18 @@ public class Enemy {
         }
     }
 
+    public boolean reachedEnd(Square[][] grid) {
+        int row = y / Square.SQUARE_HEIGHT;
+        int col = x / Square.SQUARE_WIDTH;
+
+        if (row >= 0 && row < Game.GRID_HEIGHT &&
+                col >= 0 && col < Game.GRID_WIDTH) {
+
+            return grid[row][col].getImage() == Game.END_POS;
+        }
+
+        return false;
+    }
 
     public void draw(Graphics g) {
         // Enemy body
