@@ -31,7 +31,10 @@ public class GamePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.setColor(new Color(0x2CB433));
+        g.fillRect(0,0,viewer.getWindowWidth(), viewer.getWindowHeight());
         viewer.drawGrid(g);
+
         for (Enemy enemy : viewer.getBackend().getEnemies()) {
             enemy.draw(g);
         }

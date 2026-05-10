@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class GameViewer extends JFrame {
     private Game backend;
     private int wave;
-    private static int WINDOW_WIDTH = 1920;
+
     private static int WINDOW_HEIGHT = 1080;
     private int selectedTowerType = Game.BASIC_TOWER;
     private int health = 100;
@@ -80,7 +80,15 @@ public class GameViewer extends JFrame {
 //            repaint();
 //        }).start();
     }
+    public static int getWindowWidth() {
+        return WINDOW_WIDTH;
+    }
 
+    private static int WINDOW_WIDTH = 1920;
+
+    public static int getWindowHeight() {
+        return WINDOW_HEIGHT;
+    }
     public GamePanel getGamePanel() {
         return gamePanel;
     }
@@ -125,6 +133,7 @@ public class GameViewer extends JFrame {
 //        }
 //        g.setColor(Color.WHITE);
 //        g.fillRect(10, 40, 150, 30);
+
 //
 //        g.setColor(Color.BLACK);
 //        g.drawString("Health: " + health, 20, 60);

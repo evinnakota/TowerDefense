@@ -97,7 +97,7 @@ public class Enemy {
 
     public void draw(Graphics g) {
         // Enemy body
-        g.drawImage(monster1, getX(), getY(), Square.SQUARE_WIDTH, Square.SQUARE_HEIGHT, null);
+        g.drawImage(monster2, getX(), getY(), Square.SQUARE_WIDTH, Square.SQUARE_HEIGHT, null);
 
         // Health bar background
         g.setColor(Color.RED);

@@ -27,7 +27,7 @@ public class Square {
 
     public void draw(Graphics g) {
         if (image == Game.PATH) {
-            g.setColor(Color.BLACK);
+            g.setColor(new Color(0x7F807C));
             g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
         } else if (image == Game.START_POS) {
             g.setColor(Color.GREEN);
@@ -40,8 +40,8 @@ public class Square {
         } else if (image == Game.SNIPER) {
             g.drawImage(sniperTower, x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT, null);
         }
-        g.setColor(Color.BLACK);
-        g.drawRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
+//        g.setColor(Color.BLACK);
+//        g.drawRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
     }
 
     public void drawRange(Graphics g, int mouseX, int mouseY) {
