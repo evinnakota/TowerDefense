@@ -170,5 +170,6 @@ public class Square {
     public void setY_cord(int y_cord) {
         this.y_cord = y_cord;
     }
+
 }
 
