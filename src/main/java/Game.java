@@ -8,6 +8,8 @@ import java.util.Scanner;
 
 public class Game implements ActionListener {
     private int spawnCounter = 0;
+    private int spawnDelay = 30;
+    private int speedCounter = 1;
     private int enemiesSpawned = 0;
     private int currentWave = 1;
     private int enemiesPerWave = 5;
@@ -123,7 +125,7 @@ public class Game implements ActionListener {
         // Spawn enemies for current wave
         if (enemiesSpawned < enemiesPerWave) {
 
-            if (spawnCounter >= 25) {
+            if (spawnCounter >= spawnDelay) {
                 spawnEnemy();
                 enemiesSpawned++;
                 spawnCounter = 0;
@@ -131,9 +133,8 @@ public class Game implements ActionListener {
 
         }
 
-        // Start next wave when all enemies are defeated
-        else if (enemies.isEmpty()) {
-
+        // Start next wave
+        else {
             currentWave++;
 
             // Increase difficulty each wave
@@ -141,6 +142,10 @@ public class Game implements ActionListener {
 
             enemiesSpawned = 0;
             spawnCounter = 0;
+            if (spawnDelay >= 10) {
+                spawnDelay--;
+            }
+
 
             System.out.println("Wave " + currentWave + " started!");
         }
