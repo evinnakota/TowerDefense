@@ -10,7 +10,7 @@ public class GameViewer extends JFrame {
     private static int WINDOW_WIDTH  = 1920;
     private static int WINDOW_HEIGHT = 1080;
     private int health = 100;
-    private int money  = 500;
+    private int money  = 750;
     private JLabel healthLabel;
     private JLabel moneyLabel;
     private int mouseX = -1, mouseY = -1;
@@ -292,7 +292,7 @@ public class GameViewer extends JFrame {
         JButton nextWaveBtn = new JButton(btnText);
         nextWaveBtn.setFont(new Font("Arial", Font.BOLD, 18));
         nextWaveBtn.setBackground(btnColor);
-        nextWaveBtn.setForeground(Color.WHITE);
+        nextWaveBtn.setForeground(Color.BLACK);
         nextWaveBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         nextWaveBtn.setMaximumSize(new Dimension(260, 50));
         nextWaveBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));

@@ -15,27 +15,30 @@ public class Square {
     private boolean isEnd;
     private static Image basicTower;
     private static Image sniperTower;
+    private static Image crossbowTower;
     public static final int BASIC_TOWER_RANGE = 150;
     public static final int SNIPER_TOWER_RANGE = 300;
     public static final int CROSSBOW_TOWER_RANGE = 200;
-    private static Image crossbowTower;
+
+
+    private static Image loadImage(String filename) {
+        String fullPath = "src/main/resources/" + filename;
+        java.io.File f = new java.io.File(fullPath);
+        System.out.println("Trying to load: " + f.getAbsolutePath());
+        System.out.println("File exists: " + f.exists());
+        if (f.exists()) {
+            Image img = new ImageIcon(f.getAbsolutePath()).getImage();
+            System.out.println("Loaded successfully: " + filename);
+            return img;
+        }
+        System.err.println("FAILED to load: " + fullPath);
+        return null;
+    }
 
     static {
-        try {
-            basicTower = new ImageIcon(Square.class.getResource("/tower-defense.png")).getImage();
-        } catch (Exception e) {
-            System.err.println("Failed to load basic tower image: " + e.getMessage());
-        }
-        try {
-            sniperTower = new ImageIcon(Square.class.getResource("/sniper_Tower.png")).getImage();
-        } catch (Exception e) {
-            System.err.println("Failed to load sniper tower image: " + e.getMessage());
-        }
-        try {
-            crossbowTower = new ImageIcon(Square.class.getResource("/crossbowTower.png")).getImage();
-        } catch (Exception e) {
-            System.err.println("Failed to load crossbow tower image: " + e.getMessage());
-        }
+        basicTower    = loadImage("tower-defense.png");
+        sniperTower   = loadImage("sniper_Tower.png");
+        crossbowTower = loadImage("crossbowTower.png");
     }
 
     public Square() {
@@ -78,22 +81,30 @@ public class Square {
         } else if (image == Game.SNIPER) {
             if (sniperTower != null) {
                 g.drawImage(sniperTower, x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT, null);
-            } else if (image == Game.CROSSBOW) {
-                if (crossbowTower != null) {
-                    g.drawImage(crossbowTower, x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT, null);
-                } else {
-                    g.setColor(new Color(180, 100, 20));
-                    g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
-                }
             } else {
                 g.setColor(new Color(255, 100, 100));
+                g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
+            }
+        } else if (image == Game.CROSSBOW) {
+            if (crossbowTower != null) {
+                // Preserve aspect ratio — fit within the cell
+                int imgW = crossbowTower.getWidth(null);
+                int imgH = crossbowTower.getHeight(null);
+                double scale = Math.min((double) SQUARE_WIDTH / imgW, (double) SQUARE_HEIGHT / imgH);
+                int drawW = (int)(imgW * scale);
+                int drawH = (int)(imgH * scale);
+                // Center within the cell
+                int drawX = x_cord + (SQUARE_WIDTH  - drawW) / 2;
+                int drawY = y_cord + (SQUARE_HEIGHT - drawH) / 2;
+                g.drawImage(crossbowTower, drawX, drawY, drawW, drawH, null);
+            } else {
+                g.setColor(new Color(180, 100, 20));
                 g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
             }
         }
         g.setColor(Color.BLACK);
         g.drawRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
     }
-
     public void drawRange(Graphics g, int mouseX, int mouseY) {
         if (image != Game.BASIC_TOWER && image != Game.SNIPER && image != Game.CROSSBOW) return;
 
