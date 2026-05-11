@@ -6,6 +6,8 @@ import java.util.ArrayList;
 public class GameViewer extends JFrame {
     private Game backend;
     private int wave;
+    private long lastTowerPlacedTime = 0;
+    private static final long TOWER_PLACE_DELAY = 5000; // 5 second
 
     private static int WINDOW_HEIGHT = 1080;
     private int selectedTowerType = Game.BASIC_TOWER;
@@ -148,6 +150,13 @@ public class GameViewer extends JFrame {
     }
 
     public void addTower(int x, int y) {
+
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime - lastTowerPlacedTime < TOWER_PLACE_DELAY) {
+            return;
+        }
+
         Square[][] grid = backend.getGrid();
 
         int col = x / Square.SQUARE_WIDTH;
@@ -164,17 +173,16 @@ public class GameViewer extends JFrame {
 
                 if (money >= cost) {
 
-                    // Change square visually
                     grid[row][col].addImage(selectedTowerType);
 
-                    // Add actual tower object to backend
                     backend.addTower(new Tower(
                             grid[row][col].getX_cord(),
                             grid[row][col].getY_cord()
                     ));
 
-                    // Deduct money
                     updateStats(health, money - cost);
+
+                    lastTowerPlacedTime = currentTime;
 
                 } else {
                     JOptionPane.showMessageDialog(this, "Not enough Money!");
@@ -182,7 +190,6 @@ public class GameViewer extends JFrame {
             }
         }
     }
-
 
     public int getHealth() {
         return health;
