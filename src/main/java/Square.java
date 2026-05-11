@@ -13,10 +13,30 @@ public class Square {
     private boolean isWall;
     private boolean isStart;
     private boolean isEnd;
-    private Image basicTower = new ImageIcon(getClass().getResource("/tower-defense.png")).getImage();
-    private Image sniperTower = new ImageIcon(getClass().getResource("/Sniper_Tower.png")).getImage();
+    private static Image basicTower;
+    private static Image sniperTower;
     public static final int BASIC_TOWER_RANGE = 150;
     public static final int SNIPER_TOWER_RANGE = 300;
+    public static final int CROSSBOW_TOWER_RANGE = 200;
+    private static Image crossbowTower;
+
+    static {
+        try {
+            basicTower = new ImageIcon(Square.class.getResource("/tower-defense.png")).getImage();
+        } catch (Exception e) {
+            System.err.println("Failed to load basic tower image: " + e.getMessage());
+        }
+        try {
+            sniperTower = new ImageIcon(Square.class.getResource("/sniper_Tower.png")).getImage();
+        } catch (Exception e) {
+            System.err.println("Failed to load sniper tower image: " + e.getMessage());
+        }
+        try {
+            crossbowTower = new ImageIcon(Square.class.getResource("/crossbowTower.png")).getImage();
+        } catch (Exception e) {
+            System.err.println("Failed to load crossbow tower image: " + e.getMessage());
+        }
+    }
 
     public Square() {
         int col = count % Game.GRID_WIDTH;
@@ -40,7 +60,7 @@ public class Square {
     }
     public void draw(Graphics g) {
         if (image == Game.PATH) {
-            g.setColor(Color.BLACK);
+            g.setColor(new Color(0x7f807C));
             g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
         } else if (image == Game.START_POS) {
             g.setColor(Color.GREEN);
@@ -49,30 +69,52 @@ public class Square {
             g.setColor(Color.RED);
             g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
         } else if (image == Game.BASIC_TOWER) {
-            g.drawImage(basicTower, x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT, null);
+            if (basicTower != null) {
+                g.drawImage(basicTower, x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT, null);
+            } else {
+                g.setColor(new Color(100, 100, 255));
+                g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
+            }
         } else if (image == Game.SNIPER) {
-            g.drawImage(sniperTower, x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT, null);
+            if (sniperTower != null) {
+                g.drawImage(sniperTower, x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT, null);
+            } else if (image == Game.CROSSBOW) {
+                if (crossbowTower != null) {
+                    g.drawImage(crossbowTower, x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT, null);
+                } else {
+                    g.setColor(new Color(180, 100, 20));
+                    g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
+                }
+            } else {
+                g.setColor(new Color(255, 100, 100));
+                g.fillRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
+            }
         }
         g.setColor(Color.BLACK);
         g.drawRect(x_cord, y_cord, SQUARE_WIDTH, SQUARE_HEIGHT);
     }
 
     public void drawRange(Graphics g, int mouseX, int mouseY) {
-        if (image != Game.BASIC_TOWER && image != Game.SNIPER) return;
+        if (image != Game.BASIC_TOWER && image != Game.SNIPER && image != Game.CROSSBOW) return;
 
         if (mouseX < x_cord || mouseX > x_cord + SQUARE_WIDTH ||
                 mouseY < y_cord || mouseY > y_cord + SQUARE_HEIGHT) return;
 
-        int range = (image == Game.SNIPER) ? SNIPER_TOWER_RANGE : BASIC_TOWER_RANGE;
+        int range = (image == Game.SNIPER)   ? SNIPER_TOWER_RANGE
+                : (image == Game.CROSSBOW) ? CROSSBOW_TOWER_RANGE
+                :                            BASIC_TOWER_RANGE;
+
         int cx = x_cord + SQUARE_WIDTH / 2;
         int cy = y_cord + SQUARE_HEIGHT / 2;
 
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        g2d.setColor(new Color(255, 255, 0, 50));
+        Color ringColor = (image == Game.CROSSBOW) ? new Color(180, 100, 20, 50)
+                : new Color(255, 255, 0, 50);
+        Color ringBorder = (image == Game.CROSSBOW) ? new Color(180, 100, 20, 180)
+                : new Color(255, 255, 0, 180);
+        g2d.setColor(ringColor);
         g2d.fillOval(cx - range, cy - range, range * 2, range * 2);
-        g2d.setColor(new Color(255, 255, 0, 180));
+        g2d.setColor(ringBorder);
         g2d.setStroke(new BasicStroke(1.5f));
         g2d.drawOval(cx - range, cy - range, range * 2, range * 2);
     }
@@ -93,6 +135,11 @@ public class Square {
         else if (image == Game.END_POS) {
             isEnd = true;
         }
+    }
+
+    // Add this static method to Square.java
+    public static void resetCount() {
+        count = 0;
     }
 
     public int getImage() { return image; }
