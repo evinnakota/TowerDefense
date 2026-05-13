@@ -37,40 +37,40 @@ public class WaveDefinition {
     public static List<WaveDefinition> buildWaves() {
         List<WaveDefinition> waves = new ArrayList<>();
 
-        // Wave 1 — only monster2 (weak scouts)
-        waves.add(new WaveDefinition(1, 100, "Scout Swarm", false, List.of(
-                new SpawnEntry(Enemy.TYPE_MONSTER2, 30, 3, 6, 30)
+        // Wave 1 — stronger opening
+        waves.add(new WaveDefinition(1, 125, "Scout Swarm", false, List.of(
+                new SpawnEntry(Enemy.TYPE_MONSTER2, 50, 4, 8, 24)
         )));
 
-        // Wave 2 — mostly monster2 with a couple monster1
-        waves.add(new WaveDefinition(2, 175, "First Assault", false, List.of(
-                new SpawnEntry(Enemy.TYPE_MONSTER2, 40, 3, 5, 28),
-                new SpawnEntry(Enemy.TYPE_MONSTER1, 80, 3, 2, 35)
+        // Wave 2 — more pressure
+        waves.add(new WaveDefinition(2, 225, "First Assault", false, List.of(
+                new SpawnEntry(Enemy.TYPE_MONSTER2, 65, 4, 8, 22),
+                new SpawnEntry(Enemy.TYPE_MONSTER1, 120, 4, 4, 28)
         )));
 
-        // Wave 3 — mixed, monster1 gets tankier
-        waves.add(new WaveDefinition(3, 250, "Mixed Forces", false, List.of(
-                new SpawnEntry(Enemy.TYPE_MONSTER2, 50, 4, 4, 25),
-                new SpawnEntry(Enemy.TYPE_MONSTER1, 120, 3, 4, 30)
+        // Wave 3 — serious mixed threat
+        waves.add(new WaveDefinition(3, 325, "Mixed Forces", false, List.of(
+                new SpawnEntry(Enemy.TYPE_MONSTER2, 80, 5, 7, 18),
+                new SpawnEntry(Enemy.TYPE_MONSTER1, 180, 4, 6, 24)
         )));
 
-        // Wave 4 — fast monster2 flankers + tough monster1 tanks
-        waves.add(new WaveDefinition(4, 350, "Tanks & Flankers", false, List.of(
-                new SpawnEntry(Enemy.TYPE_MONSTER2, 55, 5, 5, 20),
-                new SpawnEntry(Enemy.TYPE_MONSTER1, 175, 3, 5, 28)
+        // Wave 4 — aggressive scaling
+        waves.add(new WaveDefinition(4, 450, "Tanks & Flankers", false, List.of(
+                new SpawnEntry(Enemy.TYPE_MONSTER2, 95, 6, 9, 15),
+                new SpawnEntry(Enemy.TYPE_MONSTER1, 260, 4, 7, 20)
         )));
 
-        // Wave 5 — heavy mixed swarm
-        waves.add(new WaveDefinition(5, 500, "Final Onslaught", false, List.of(
-                new SpawnEntry(Enemy.TYPE_MONSTER2, 70, 5, 6, 18),
-                new SpawnEntry(Enemy.TYPE_MONSTER1, 250, 4, 6, 22)
+        // Wave 5 — near survival mode
+        waves.add(new WaveDefinition(5, 650, "Final Onslaught", false, List.of(
+                new SpawnEntry(Enemy.TYPE_MONSTER2, 120, 6, 12, 12),
+                new SpawnEntry(Enemy.TYPE_MONSTER1, 375, 5, 10, 16)
         )));
 
-        // Wave 6 — BOSS WAVE
-        waves.add(new WaveDefinition(6, 800, "THE BOSS AWAKENS", true, List.of(
-                new SpawnEntry(Enemy.TYPE_MONSTER2, 60, 4, 4, 20), // minion escorts
-                new SpawnEntry(Enemy.TYPE_BOSS,    1200, 2, 1, 60), // the boss
-                new SpawnEntry(Enemy.TYPE_MONSTER1, 150, 3, 3, 25)  // rear guard
+        // Wave 6 — much harder boss wave
+        waves.add(new WaveDefinition(6, 1200, "THE BOSS AWAKENS", true, List.of(
+                new SpawnEntry(Enemy.TYPE_MONSTER2, 100, 6, 10, 14),
+                new SpawnEntry(Enemy.TYPE_BOSS,    3000, 3, 1, 45),
+                new SpawnEntry(Enemy.TYPE_MONSTER1, 350, 5, 8, 18)
         )));
 
         return waves;
@@ -81,21 +81,55 @@ public class WaveDefinition {
      * waveNum is 1-indexed (e.g. wave 7, 8, ...).
      */
     public static WaveDefinition generateInfiniteWave(int waveNum) {
-        int extra = waveNum - 6; // how many waves past the boss
-        boolean isBossWave = (extra % 5 == 0); // boss every 5 infinite waves
+        int extra = waveNum - 6;
+        boolean isBossWave = (extra % 4 == 0); // bosses more often
 
-        int reward = 600 + extra * 100;
+        int reward = 1000 + extra * 175;
         String desc = isBossWave ? "Elite Boss Surge" : "Endless Horde — Wave " + waveNum;
 
         List<SpawnEntry> spawns = new ArrayList<>();
 
         if (isBossWave) {
-            spawns.add(new SpawnEntry(Enemy.TYPE_MONSTER2, 80 + extra * 10, 5, 5 + extra, 18));
-            spawns.add(new SpawnEntry(Enemy.TYPE_BOSS, 1500 + extra * 200, 2, 1 + extra / 5, 55));
-            spawns.add(new SpawnEntry(Enemy.TYPE_MONSTER1, 200 + extra * 20, 4, 4 + extra, 22));
+            spawns.add(new SpawnEntry(
+                    Enemy.TYPE_MONSTER2,
+                    140 + extra * 18,
+                    6 + Math.min(extra / 4, 4),
+                    10 + extra,
+                    Math.max(8, 16 - extra / 3)
+            ));
+
+            spawns.add(new SpawnEntry(
+                    Enemy.TYPE_BOSS,
+                    4000 + extra * 450,
+                    3 + Math.min(extra / 10, 2),
+                    2 + extra / 4,
+                    Math.max(25, 45 - extra)
+            ));
+
+            spawns.add(new SpawnEntry(
+                    Enemy.TYPE_MONSTER1,
+                    450 + extra * 35,
+                    5 + Math.min(extra / 5, 3),
+                    8 + extra,
+                    Math.max(10, 18 - extra / 4)
+            ));
+
         } else {
-            spawns.add(new SpawnEntry(Enemy.TYPE_MONSTER2, 70 + extra * 8,  5 + Math.min(extra / 3, 3), 5 + extra, 16));
-            spawns.add(new SpawnEntry(Enemy.TYPE_MONSTER1, 250 + extra * 25, 4 + Math.min(extra / 4, 2), 5 + extra, 20));
+            spawns.add(new SpawnEntry(
+                    Enemy.TYPE_MONSTER2,
+                    120 + extra * 12,
+                    6 + Math.min(extra / 3, 5),
+                    10 + extra * 2,
+                    Math.max(6, 14 - extra / 4)
+            ));
+
+            spawns.add(new SpawnEntry(
+                    Enemy.TYPE_MONSTER1,
+                    400 + extra * 40,
+                    5 + Math.min(extra / 4, 4),
+                    8 + extra * 2,
+                    Math.max(8, 18 - extra / 5)
+            ));
         }
 
         return new WaveDefinition(waveNum, reward, desc, isBossWave, spawns);

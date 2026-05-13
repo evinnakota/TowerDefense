@@ -9,13 +9,13 @@ public class GameViewer extends JFrame {
     private int wave;
     private static int WINDOW_WIDTH  = 1920;
     private static int WINDOW_HEIGHT = 1080;
-    private int health = 100;
-    private int money  = 750;
+    private int health = 50;
+    private int money  = 250;
     private JLabel healthLabel;
     private JLabel moneyLabel;
     private int mouseX = -1, mouseY = -1;
     private GamePanel gamePanel;
-    public static final int BASIC_TOWER_COST  = 75;
+    public static final int BASIC_TOWER_COST  = 50;
     public static final int SNPIER_TOWER_COST = 150;
     private JLabel waveLabel;
     private JPanel waveOverlay;
@@ -28,7 +28,7 @@ public class GameViewer extends JFrame {
     private JPanel upgradeOverlay;
     private Tower selectedTower;
     private Integer selectedTowerType = null;
-    public static final int CROSSBOW_TOWER_COST = 110;
+    public static final int CROSSBOW_TOWER_COST = 100;
 
     public GameViewer(Game backend) {
         this.backend = backend;
